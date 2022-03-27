@@ -1,3 +1,7 @@
+let IsCubeDataLoadFin = false;
+let IsRoyalDataLoadFin = false;
+let IsAppleDataLoadFin = false;
+
 const start = Date.now();
 
 function get_delay_time(){
@@ -14,8 +18,9 @@ fetch("./data/GoldApple.json")
     return res.json();
 })
 .then(jsondata => {
-    console.log(jsondata);
+    GoldAppleData = jsondata;
     console.log(get_delay_time());
+    IsAppleDataLoadFin =  true;
 });
 
 fetch("./data/RoyalStyle.json")
@@ -23,8 +28,9 @@ fetch("./data/RoyalStyle.json")
     return res.json();
 })
 .then(jsondata => {
-    console.log(jsondata);
+    RoyalStyleData = jsondata;
     console.log(get_delay_time());
+    IsRoyalDataLoadFin = true;
 });
 
 fetch("./data/CubeData.json")
@@ -32,6 +38,11 @@ fetch("./data/CubeData.json")
     return res.json();
 })
 .then(jsondata => {
-    console.log(jsondata);
+    CubeData = jsondata;
     console.log(get_delay_time());
+    IsCubeDataLoadFin = true;
 });
+
+function IsLoadingFinish() {
+    return IsCubeDataLoadFin && IsRoyalDataLoadFin && IsAppleDataLoadFin;
+}

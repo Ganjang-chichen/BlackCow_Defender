@@ -1,6 +1,21 @@
+/*css reset*/
+@import "./component/reset.css";
+
 /*screen*/
 @import "./screen/background.css";
-@import "./screen/emptyspace.css";
+@import "./screen/space.css";
+@import "./screen/calculator.css";
 
 /*component*/
-@import "./component/item_btn.css";
+@import "./component/itemBtn.css";
+@import "./component/item-counter.css";
+
+/*font*/
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
+body {
+    font-size: 20px;
+    font-family: 'Jua', sans-serif;
+    min-width: 900px;
+    height: 200vh;
+}

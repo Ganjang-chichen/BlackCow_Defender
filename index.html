@@ -13,14 +13,13 @@
         <div class="background">
             <img src="./img/흑우배경.png" alt="" >
         </div>
-        
     </header>
 
     <main>
         <div class="empty_space"></div>
         <div class="item-btn">
-            <button>로얄스타일</button>
-            <button>골드애플</button>
+            <button onclick="itemButtonClick('로얄스타일')">로얄스타일</button>
+            <button onclick="itemButtonClick('골드애플')">골드애플</button>
             <button>블랙큐브</button>
             <button>레드큐브</button>
             <button>에디셔널큐브</button>
@@ -28,9 +27,43 @@
             <button>장인의큐브</button>
             <button>수상한큐브</button>
         </div>
+
+        <div class="item-counter">
+            <img src="./img/Royal.png" alt="">
+            
+            <input type="number" id="count" placeholder="총알 장전수" min="0">
+            
+            <img src="./img/Royal.png" alt="">
+        </div>
+
+        <div class="calculator">
+            <select class="item-select">
+                <option value="">선택</option>
+            </select>
+            <div class="item-selected">
+                <div>[스페셜 라벨] 깡총 리본아트</div>
+            </div>
+            <div class="item-p">
+                <div>2.5%</div>
+            </div>
+            <div class="delete-btn-list">
+                <button class="delete-btn">x</button>
+            </div>
+        </div>
+
+        <div class="result">
+            <div>
+                <button>결과</button>    
+            </div>
+            <div class="line"></div>
+            <div class="expression"></div>
+            <div class="value"></div>
+        </div>
     </main>
 
     <script src="./js/loadingData.js"></script>
     <script src="./js/sketch.js"></script>
+    <script src="./js/windowsizeCtl.js"></script>
+    <script src="./js/createCalculate.js"></script>
 </body>
 </html>

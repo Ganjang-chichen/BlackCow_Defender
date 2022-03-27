@@ -1,0 +1,17 @@
+.item-select {
+    font-family: inherit;
+    font-size: inherit;
+    width: 20%;
+    height: 60px;
+}
+
+.delete-btn-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-selected div,
+.item-p div,
+.delete-btn-list button {
+    margin: 4px;
+}

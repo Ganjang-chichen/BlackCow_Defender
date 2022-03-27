@@ -1,0 +1,15 @@
+.empty_space {
+    width: 100%;
+    height: 530px;
+}
+
+
+.calculator {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 3px black solid;
+}
