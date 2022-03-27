@@ -1,0 +1,9 @@
+.item-btn {
+    display: flex;
+    justify-content: space-around;
+}
+
+.item-btn > button{
+    background-color: black;
+    color: white;
+}

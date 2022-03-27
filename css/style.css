@@ -1,0 +1,6 @@
+/*screen*/
+@import "./screen/background.css";
+@import "./screen/emptyspace.css";
+
+/*component*/
+@import "./component/item_btn.css";
