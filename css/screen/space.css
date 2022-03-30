@@ -3,8 +3,8 @@
     height: 530px;
 }
 
-
-.calculator {
+.item-container,
+.select-equipment {
     width: 100%;
     display: flex;
     justify-content: space-around;
@@ -12,4 +12,22 @@
     margin-top: 20px;
     padding-top: 10px;
     border-top: 3px black solid;
+}
+
+.select-equipment select{
+    width: 40%;
+    height: 50px;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    text-align: center;
+}
+
+
+.result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
 }

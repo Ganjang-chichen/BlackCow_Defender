@@ -5,10 +5,13 @@
 @import "./screen/background.css";
 @import "./screen/space.css";
 @import "./screen/calculator.css";
+@import "./screen/result.css";
 
 /*component*/
 @import "./component/itemBtn.css";
 @import "./component/item-counter.css";
+@import "./component/line.css";
+@import "./component/chart.css";
 
 /*font*/
 @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
@@ -19,3 +22,13 @@ body {
     min-width: 900px;
     height: 200vh;
 }
+
+button {
+    background: none;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    border: rgba(0, 0, 0, 0.8) 2px solid;
+    border-radius: 3px;
+}
+

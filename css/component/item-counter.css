@@ -18,15 +18,15 @@
     text-align: center;
 }
 
-#count {
+.count {
     font-family: inherit;
     font-weight: inherit;
     font-size: inherit;
     text-align: center;
     width: 100px;
 }
-#count::-webkit-outer-spin-button,
-#count::-webkit-inner-spin-button {
+.count::-webkit-outer-spin-button,
+.count::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }

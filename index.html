@@ -7,6 +7,9 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/style.css">
     <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <header>
@@ -20,44 +23,105 @@
         <div class="item-btn">
             <button onclick="itemButtonClick('로얄스타일')">로얄스타일</button>
             <button onclick="itemButtonClick('골드애플')">골드애플</button>
-            <button>블랙큐브</button>
-            <button>레드큐브</button>
-            <button>에디셔널큐브</button>
-            <button>명장의큐브</button>
-            <button>장인의큐브</button>
-            <button>수상한큐브</button>
+            <button onclick="selectCube('블랙큐브')">블랙큐브</button>
+            <button onclick="selectCube('레드큐브')">레드큐브</button>
+            <button onclick="selectCube('에디셔널큐브')">에디셔널큐브</button>
+            <button onclick="selectCube('명장의큐브')">명장의큐브</button>
+            <button onclick="selectCube('장인의큐브')">장인의큐브</button>
+            <button onclick="selectCube('수상한큐브')">수상한큐브</button>
         </div>
 
         <div class="item-counter">
             <img src="./img/Royal.png" alt="">
-            
-            <input type="number" id="count" placeholder="총알 장전수" min="0">
+            <div>도전 횟수:</div>
+            <input type="number" class="count try" value="1" min="1">
+            <div>기대 획득 개수:</div>
+            <input type="number" class="count expect" value="1" min="1">
             
             <img src="./img/Royal.png" alt="">
         </div>
 
         <div class="calculator">
-            <select class="item-select">
-                <option value="">선택</option>
-            </select>
-            <div class="item-selected">
-                <div>[스페셜 라벨] 깡총 리본아트</div>
+            <div class="select-equipment">
+                <select class="equipment-option-select">
+                    <option value="">장비 종류 선택</option>
+                </select>
             </div>
-            <div class="item-p">
-                <div>2.5%</div>
-            </div>
-            <div class="delete-btn-list">
-                <button class="delete-btn">x</button>
+            <div class="cubeOption-select">
+                <div>
+                    <select class="first-option-select">
+                        <option value="">1줄 옵션 선택</option>
+                    </select>
+                    <div class="cubeOptionList-first">
+                        <div class="cubeOption-first">
+                            <div>캐릭터 기준 10레벨 당 공격력 : +1</div>
+                            <div>11%</div>
+                            <button>x</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <select class="second-option-select">
+                        <option value="">2줄 옵션 선택</option>
+                    </select>
+                    <div class="cubeOptionList-second">
+                        <div class="cubeOption-second">
+                            <div>보공40%</div>
+                            <div>11% <button>x</button></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <select class="third-option-select">
+                        <option value="">3줄 옵션 선택</option>
+                    </select>
+                    <div class="cubeOptionList-third">
+                        <div class="cubeOption-third">
+                            <div>방무40%</div>
+                            <div>11% <button>x</button></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="result">
             <div>
-                <button>결과</button>    
+                <button onclick="showResult()">결과</button>    
             </div>
             <div class="line"></div>
-            <div class="expression"></div>
-            <div class="value"></div>
+            <div>
+                숫자 표시에서 너무 작은 숫자는 e 를 써서 표기함<br>
+                예를 들어 3.14159e-3 = 3.141592 x 10^(-3) = 0.003141592
+            </div>
+            <div class="expression">
+                <div class="expression-ko">
+                    \[ p = \frac{(첫 번째 옵션 합) \times (두 번째 옵션 합) \times (세 번째 옵션합) }{1 -3줄몬스터 방어율 무시 -3줄보스 몬스터 공격 시 데미지 } \]
+                </div>
+                <div class="expression-no">
+                    \[ p = \frac{(0.048780000000000004) \times (1) \times (1) }{1 -0.00052291888607592 -0.0009163364275684802 } \]
+                </div>
+                <div class="value">
+                    \[ p = 0.04885030806545638 \]
+                </div>
+                <div class="value-ko">1회 독립시행 시 확률 : 4.885030806545638%</div>
+                <br>
+                <div class="finalvalue-ko">
+                    (100번 도전 시 성공 확률) = (전체 확률) - (100회 전부 원하는 옵션 못 뽑을 확률)
+                </div>
+                <div class="finalvalue-no">
+                    \[ V = 1 - (1 - p)^{100} \]
+                </div>
+                <div class="finalvalue-result-no">\[  V = 0.XXXX\]\[ V=fef \]</div>
+                <div class="finalvalue-result-p">100회 도전시 성공확률 1.234%</div>
+            </div>
+            
+            
+            
+            <div class="chart-box">
+                <canvas class="chart"></canvas>
+            </div>
+            
         </div>
     </main>
 
@@ -65,5 +129,7 @@
     <script src="./js/sketch.js"></script>
     <script src="./js/windowsizeCtl.js"></script>
     <script src="./js/createCalculate.js"></script>
+    <script src="./js/result.js"></script>
+    
 </body>
 </html>

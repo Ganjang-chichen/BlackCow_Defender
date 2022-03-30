@@ -15,3 +15,43 @@
 .delete-btn-list button {
     margin: 4px;
 }
+
+.cubeOption-select {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    width: 100%;
+    margin: 20px;
+}
+
+.cubeOption-select > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 25%;
+}
+
+.cubeOption-select > div > select {
+    width: 100%;
+    height: 50px;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    margin-bottom: 20px;
+}
+.cubeOptionList-first,
+.cubeOptionList-second,
+.cubeOptionList-third {
+    width: 100%;
+}
+
+.cubeOption-first,
+.cubeOption-second,
+.cubeOption-third {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
