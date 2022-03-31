@@ -29,7 +29,6 @@ function calc_OnlyI(p, tryed, expect) {
         let H = aHb(tryed - i + 1, i);
         let p1_p = Math.pow(p, i) * Math.pow(1 - p, tryed - i);
         calc_list.push(H * p1_p);
-        console.log(H, p1_p);
     }
 
     return calc_list;
@@ -112,7 +111,7 @@ function caseNotCube() {
         }
         y_expect.push((1 - sum) * 100);
     }
-
+    let ctx = document.querySelector('.chart-expect').getContext("2d");
     new Chart(
         document.querySelector('.chart-expect'),
         {
@@ -131,6 +130,16 @@ function caseNotCube() {
                     subtitle: {
                         display: true,
                         text: `고정값: 도전 횟수 - ${tryed}`
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            // Include a dollar sign in the ticks
+                            callback: function(value, index, ticks) {
+                                return value + "%";
+                            }
+                        }
                     }
                 }
             }
@@ -170,6 +179,16 @@ function caseNotCube() {
                     subtitle: {
                         display: true,
                         text: `고정값: 기대 획득 개수 - ${expect}`
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function(value, index, ticks) {
+                            return value + "%";
+                        }
                     }
                 }
             }
