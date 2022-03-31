@@ -238,3 +238,11 @@ function clickDelete_option(node) {
     node.parentNode.parentNode.removeChild(node.parentNode);
 }
 
+document.querySelector(".expect").addEventListener("input", () => {
+    let v_try = document.querySelector(".try").value
+    let v_expect = document.querySelector(".expect").value
+
+    if(parseInt(v_try) < parseInt(v_expect)) {
+        document.querySelector(".expect").value = v_try;
+    }
+});

@@ -1,3 +1,14 @@
+function aHb(a, b) {
+    if(a === 0 || b === 0) {
+        return 1;
+    }
+    let x = a + b - 1;
+    let result = 1;
+    for(let i = 0; i < b; i ++) {
+        result = result * (x - i) / (i + 1);
+    }
+    return result;
+}
 
 function showResult() {
     if(currState === "로얄스타일" || currState === "골드애플"){
@@ -11,24 +22,160 @@ function showResult() {
         return;
     }
 }
+function calc_OnlyI(p, tryed, expect) {
+    let calc_list = [];
+    
+    for(let i = 0; i < expect; i++) {
+        let H = aHb(tryed - i + 1, i);
+        let p1_p = Math.pow(p, i) * Math.pow(1 - p, tryed - i);
+        calc_list.push(H * p1_p);
+        console.log(H, p1_p);
+    }
+
+    return calc_list;
+}
 
 function caseNotCube() {
-    let li = document.querySelector(".item-p").querySelectorAll("div");
-    if(li.length === 0) {
+    const tryed = parseInt(document.querySelector(".try").value);
+    const expect = parseInt(document.querySelector(".expect").value);
+
+    let li_name = document.querySelector(".item-selected").querySelectorAll("div");
+    let li_p = document.querySelector(".item-p").querySelectorAll("div");
+    if(li_p.length === 0) {
         alert("아이템을 선택하고 눌러");
         return;
     }
 
+    let itemList_p = "\\[ p = ";
     let p_sum = 0;
-    for(let i = 0; i < li.length; i++) {
-        p_sum += parseFloat(li[i].innerText.replace("%", "")) / 100;
+    for(let i = 0; i < li_p.length; i++) {
+        p_sum += parseFloat(li_p[i].innerText.replace("%", "")) / 100;
+
+        itemList_p += ` + ${parseFloat(li_p[i].innerText.replace("%", "")) / 100}`;
+
     }
-    console.log(p_sum);
+    itemList_p += " \\]"
 
-    const tryed = parseInt(document.querySelector(".try").value);
-    const expect = parseInt(document.querySelector(".expect").value);
+    // 딱 i 번 실패할 확률 계산
+    let calc_list = calc_OnlyI(p_sum, tryed, expect);
 
-    console.log(tryed, expect);
+    // 수식 표현
+    let limit_ko = ``;
+    let limit_no = `\\[ V = 1 `;
+    let limit_sum = 0;
+    for(let i = 0; i < calc_list.length; i++) {
+        limit_no += ` - (${calc_list[i]})`;
+        limit_ko += ` - (딱 ${i}번만 성공할 확률) `
+        limit_sum += calc_list[i];
+    }
+    limit_no += ` \\] `;
+
+    document.querySelector(".expression-ko").innerHTML = `
+        \\[ p = \\Sigma (선택된 아이템 확률 합산) \\]
+    `;
+    document.querySelector(".value").innerHTML = `
+        \\[ p = ${p_sum} \\]
+    `;
+    document.querySelector(".value-ko").innerHTML = `
+        1회 독립시행 시 확률 : ${p_sum * 100}%
+    `;
+    document.querySelector(".finalvalue-ko").innerHTML = `
+        (${tryed}번 도전해 ${expect}번 이상 뽑을 확률) = (전체확률) ${limit_ko}
+    `;
+    document.querySelector(".finalvalue-no").innerHTML = limit_no;
+    document.querySelector(".finalvalue-result-no").innerHTML = `
+        \\[ V = ${1 - limit_sum} \\]
+    `;
+    document.querySelector(".finalvalue-result-p").innerHTML = `
+        ${tryed}회 도전 시 ${expect}회 이상 뽑을 확률 : ${(1 - limit_sum) * 100}%
+    `;
+
+    MathJax.typeset();
+
+    // 그래프 생성
+    let chart_box = document.querySelector(".chart-box");
+    chart_box.innerHTML = "";
+    chart_box.innerHTML = `
+        <canvas class="chart chart-expect"></canvas>    
+        <canvas class="chart chart-try"></canvas>
+    `
+    // 변수 기대 횟수
+    let x_expect = [];
+    let y_expect = [];
+
+    for(let i = 1; i <= expect; i++) {
+        x_expect.push(i);
+        
+        let sum = 0
+        for(let j = 0; j < i; j++){
+            sum += calc_list[j];
+        }
+        y_expect.push((1 - sum) * 100);
+    }
+
+    new Chart(
+        document.querySelector('.chart-expect'),
+        {
+            type: "line",
+            data: {
+                labels: x_expect,
+                datasets: [{
+                    label: "각 기대 획득값 별 성공확률",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: y_expect,
+                }]
+            },
+            options: {
+                plugins: {
+                    subtitle: {
+                        display: true,
+                        text: `고정값: 도전 횟수 - ${tryed}`
+                    }
+                }
+            }
+        }
+    );
+
+    // 변수: 도전횟수
+    let x_try = [];
+    let y_try = [];
+
+    for(let i = expect; i <= tryed; i++) {
+        x_try.push(i);
+
+        let y_val = 0;
+        let temp = calc_OnlyI(p_sum, i, expect);
+        for(let j = 0; j < temp.length; j++) {
+            y_val += temp[j];
+        }
+        y_try.push((1 - y_val) * 100);
+    }
+
+    new Chart(
+        document.querySelector('.chart-try'),
+        {
+            type: "line",
+            data: {
+                labels: x_try,
+                datasets: [{
+                    label: "각 도전 횟수 별 성공확률",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: y_try,
+                }]
+            },
+            options: {
+                plugins: {
+                    subtitle: {
+                        display: true,
+                        text: `고정값: 기대 획득 개수 - ${expect}`
+                    }
+                }
+            }
+        }
+    );
+    
 }
 
 //*******************************큐브 확률 계산**************************************
@@ -255,9 +402,7 @@ function caseCube() {
     let chart_box = document.querySelector(".chart-box");
     chart_box.innerHTML = "";
     chart_box.innerHTML = `
-        <div class="chart-box">
-            <canvas class="chart"></canvas>
-        </div>
+        <canvas class="chart"></canvas>
     `
     new Chart(
         document.querySelector('.chart'),

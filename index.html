@@ -42,47 +42,7 @@
         </div>
 
         <div class="calculator">
-            <div class="select-equipment">
-                <select class="equipment-option-select">
-                    <option value="">장비 종류 선택</option>
-                </select>
-            </div>
-            <div class="cubeOption-select">
-                <div>
-                    <select class="first-option-select">
-                        <option value="">1줄 옵션 선택</option>
-                    </select>
-                    <div class="cubeOptionList-first">
-                        <div class="cubeOption-first">
-                            <div>캐릭터 기준 10레벨 당 공격력 : +1</div>
-                            <div>11%</div>
-                            <button>x</button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <select class="second-option-select">
-                        <option value="">2줄 옵션 선택</option>
-                    </select>
-                    <div class="cubeOptionList-second">
-                        <div class="cubeOption-second">
-                            <div>보공40%</div>
-                            <div>11% <button>x</button></div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <select class="third-option-select">
-                        <option value="">3줄 옵션 선택</option>
-                    </select>
-                    <div class="cubeOptionList-third">
-                        <div class="cubeOption-third">
-                            <div>방무40%</div>
-                            <div>11% <button>x</button></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
 
         <div class="result">
@@ -92,28 +52,29 @@
             <div class="line"></div>
             <div>
                 숫자 표시에서 너무 작은 숫자는 e 를 써서 표기함<br>
-                예를 들어 3.14159e-3 = 3.141592 x 10^(-3) = 0.003141592
+                예를 들어 3.14159e-3 = 3.141592 x 10^(-3) = 0.003141592<br>
+                확률이 너무 낮으면 오류 날 수 있음
             </div>
             <div class="expression">
                 <div class="expression-ko">
-                    \[ p = \frac{(첫 번째 옵션 합) \times (두 번째 옵션 합) \times (세 번째 옵션합) }{1 -3줄몬스터 방어율 무시 -3줄보스 몬스터 공격 시 데미지 } \]
+                    
                 </div>
                 <div class="expression-no">
-                    \[ p = \frac{(0.048780000000000004) \times (1) \times (1) }{1 -0.00052291888607592 -0.0009163364275684802 } \]
+                    
                 </div>
                 <div class="value">
-                    \[ p = 0.04885030806545638 \]
+                    
                 </div>
-                <div class="value-ko">1회 독립시행 시 확률 : 4.885030806545638%</div>
+                <div class="value-ko"></div>
                 <br>
                 <div class="finalvalue-ko">
-                    (100번 도전 시 성공 확률) = (전체 확률) - (100회 전부 원하는 옵션 못 뽑을 확률)
+                    
                 </div>
                 <div class="finalvalue-no">
-                    \[ V = 1 - (1 - p)^{100} \]
+                    
                 </div>
-                <div class="finalvalue-result-no">\[  V = 0.XXXX\]\[ V=fef \]</div>
-                <div class="finalvalue-result-p">100회 도전시 성공확률 1.234%</div>
+                <div class="finalvalue-result-no"></div>
+                <div class="finalvalue-result-p"></div>
             </div>
             
             
