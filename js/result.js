@@ -464,56 +464,97 @@ function caseFire() {
     let isweapon = document.querySelector(".fireOptions-isweapon");
     let options_li = document.querySelectorAll(".fireOptions-selected");
     let options_point_sum = FireData[selectfire].slice();
+    let p;
     
+    if(options_li.length === 0) {
+        return;
+    }
+
     let options_point_sumV = 0;
     for(let i = 4; i >= 0; i--){
         options_point_sumV += options_point_sum[i];
         options_point_sum[i] = options_point_sumV;
     }
 
+    
     document.querySelector(".expression-ko").innerHTML = `
         \\[ p : 독립시행 확률, p_n : 각 옵션의 개수(n)별 확률, x_n : 각 옵션의 개수 확률 \\]
         단 보스 장비의 경우 옵션의 개수는 고정으로 4개이다.
-        \\[ x1 = 0.4, x2 = 0.4, x3 = 0.16, x4 = 0.04 \\]
-        \\[ p = \\Sigma_{k=n}^4 (p_k) \\times (원하는 등급 이상 확률1) \\times ... \\times (원하는 등급 이상 확률 n) \\]
-        \\[ p_k =  x_k \\times \\frac{_{19-n}C_{k - n}}{ _{19}C_k} \\]
+        
     `
+    if(isBoss.value === "0"){
 
-    let expression_no = ``;
-    let expression_no2 = "\\[ p = ( ";
-    let expression_eachP = [0];
-    for(let i = 4; i >= options_li.length; i--) {
-        let Xk = FireData["옵션 개수"][i - 1];
-        let C1 = aCb(19 - options_li.length, i - options_li.length);
-        let C2 = aCb(19, i);
-        let result = Xk * C1 / C2;
-        expression_no += `\\[ p_${i} = ${Xk} \\times \\frac{${C1}}{${C2}} \\]`
-        expression_eachP.push(result);
-        expression_no2 += ` + ${result}`;
-        expression_eachP[0] += result;
-    } expression_no2 += ") "
+        document.querySelector(".expression-ko").innerHTML += `
+            \\[ x1 = 0.4, x2 = 0.4, x3 = 0.16, x4 = 0.04 \\]
+            \\[ p = (\\Sigma_{k=n}^4 p_k) \\times (원하는 등급 이상 확률1) \\times ... \\times (원하는 등급 이상 확률 n) \\]
+            \\[ p_k =  x_k \\times \\frac{_{19-n}C_{k - n}}{ _{19}C_k} \\]
+        `
 
-    let expression_wantedP = [1];
-    for(let i = 0; i < options_li.length; i++) {
-        let getWanted = parseInt(5 - options_li[i].querySelector("input").value);
-        if(getWanted > 4){
-            getWanted = 4;
+        let expression_no = ``;
+        let expression_no2 = "\\[ p = ( ";
+        let expression_eachP = [0];
+        for(let i = 4; i >= options_li.length; i--) {
+            let Xk = FireData["옵션 개수"][i - 1];
+            let C1 = aCb(19 - options_li.length, i - options_li.length);
+            let C2 = aCb(19, i);
+            let result = Xk * C1 / C2;
+            expression_no += `\\[ p_${i} = ${Xk} \\times \\frac{${C1}}{${C2}} \\]`
+            expression_eachP.push(result);
+            expression_no2 += ` + ${result}`;
+            expression_eachP[0] += result;
+        } expression_no2 += ") "
+
+        let expression_wantedP = [1];
+        for(let i = 0; i < options_li.length; i++) {
+            let getWanted = parseInt(5 - options_li[i].querySelector("input").value);
+            if(getWanted > 4){
+                getWanted = 4;
+            }
+            if(getWanted < 0){
+                getWanted = 0;
+            }
+            let result = options_point_sum[getWanted];
+            expression_wantedP[0] *= result;
+            expression_wantedP.push(result);
+            expression_no2 += ` \\times ${result}`;
         }
-        if(getWanted < 0){
-            getWanted = 0;
+
+        expression_no2 += ` \\]`;
+        p = expression_eachP[0] * expression_wantedP[0];
+
+        document.querySelector('.expression-no').innerHTML = expression_no;
+        document.querySelector('.expression-no').innerHTML += expression_no2;
+
+    }else if(isBoss.value === "1") {
+        document.querySelector(".expression-ko").innerHTML += `
+        \\[ p = \\frac{_{19-n}C_{4 - n}}{ _{19}C_4} \\times (원하는 등급 이상 확률1) \\times ... \\times (원하는 등급 이상 확률 n) \\]
+        `
+
+        let C1 = aCb(19 - options_li.length, 4- options_li.length);
+        let C2 = aCb(19, 4);
+        document.querySelector(".expression-no").innerHTML = `
+            \\[ p = \\frac{ _{${19 - options_li.length}C_{${4 - options_li.length}}}}{_{19}C_4}
+        `
+
+        let expression_wantedP = [1];
+        for(let i = 0; i < options_li.length; i++) {
+            let getWanted = parseInt(5 - options_li[i].querySelector("input").value);
+            if(getWanted > 4){
+                getWanted = 4;
+            }
+            if(getWanted < 0){
+                getWanted = 0;
+            }
+            let result = options_point_sum[getWanted];
+            expression_wantedP[0] *= result;
+            expression_wantedP.push(result);
+            document.querySelector(".expression-no").innerHTML += ` \\times ${result}`;
         }
-        let result = options_point_sum[getWanted];
-        expression_wantedP[0] *= result;
-        expression_wantedP.push(result);
-        expression_no2 += ` \\times ${result}`;
+        document.querySelector(".expression-no").innerHTML += `\\]`
+        
+        p = C1 / C2 * expression_wantedP[0];
     }
-
-    expression_no2 += ` \\]`;
-    let p = expression_eachP[0] * expression_wantedP[0];
-
-
-    document.querySelector('.expression-no').innerHTML = expression_no;
-    document.querySelector('.expression-no').innerHTML += expression_no2;
+    
     document.querySelector('.value').innerHTML = `\\[  p = ${p} \\]`;
     document.querySelector('.value-ko').innerHTML = `독립 시행 확률 : ${p * 100}%`
     
@@ -527,6 +568,33 @@ function caseFire() {
 
     MathJax.typeset();
 
-    document.querySelector(".chart-box").innerHTML = "";
+    let x = [0];
+    let y = [0];
 
+    for(let i = 1; i <= tried; i++) {
+        x.push(i);
+        y.push((1 - Math.pow((1 - p), i)) * 100);
+    }
+
+    let chart_box = document.querySelector(".chart-box");
+    chart_box.innerHTML = "";
+    chart_box.innerHTML = `
+        <canvas class="chart"></canvas>
+    `
+    new Chart(
+        document.querySelector('.chart'),
+        {
+            type: "line",
+            data: {
+                labels: x,
+                datasets: [{
+                    label: "각 횟수별 성공확률",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: y,
+                }]
+            },
+            options: {}
+        }
+    )
 }
