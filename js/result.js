@@ -21,6 +21,9 @@ function showResult() {
         caseCube();
         return;
     }
+    else if(currState === "환생의불꽃"){
+        caseFire();
+    }
 }
 function calc_OnlyI(p, tryed, expect) {
     let calc_list = [];
@@ -439,5 +442,91 @@ function caseCube() {
             options: {}
         }
     )
+
+}
+
+//*******************************환불 확률 계산**************************************
+
+function aCb(a, b) {
+    if(b < 1 || a <= b) {
+        return 1;
+    }
+    let value = 1;
+    for(let i = 0; i < b; i++) {
+        value = value * (a - i) / (1 + i);
+    }
+    return value;
+}
+
+function caseFire() {
+    let selectfire = document.querySelector(".selectfire").value;
+    let isBoss = document.querySelector(".fireOptions-isBoss");
+    let isweapon = document.querySelector(".fireOptions-isweapon");
+    let options_li = document.querySelectorAll(".fireOptions-selected");
+    let options_point_sum = FireData[selectfire].slice();
+    
+    let options_point_sumV = 0;
+    for(let i = 4; i >= 0; i--){
+        options_point_sumV += options_point_sum[i];
+        options_point_sum[i] = options_point_sumV;
+    }
+
+    document.querySelector(".expression-ko").innerHTML = `
+        \\[ p : 독립시행 확률, p_n : 각 옵션의 개수(n)별 확률, x_n : 각 옵션의 개수 확률 \\]
+        단 보스 장비의 경우 옵션의 개수는 고정으로 4개이다.
+        \\[ x1 = 0.4, x2 = 0.4, x3 = 0.16, x4 = 0.04 \\]
+        \\[ p = \\Sigma_{k=n}^4 (p_k) \\times (원하는 등급 이상 확률1) \\times ... \\times (원하는 등급 이상 확률 n) \\]
+        \\[ p_k =  x_k \\times \\frac{_{19-n}C_{k - n}}{ _{19}C_k} \\]
+    `
+
+    let expression_no = ``;
+    let expression_no2 = "\\[ p = ( ";
+    let expression_eachP = [0];
+    for(let i = 4; i >= options_li.length; i--) {
+        let Xk = FireData["옵션 개수"][i - 1];
+        let C1 = aCb(19 - options_li.length, i - options_li.length);
+        let C2 = aCb(19, i);
+        let result = Xk * C1 / C2;
+        expression_no += `\\[ p_${i} = ${Xk} \\times \\frac{${C1}}{${C2}} \\]`
+        expression_eachP.push(result);
+        expression_no2 += ` + ${result}`;
+        expression_eachP[0] += result;
+    } expression_no2 += ") "
+
+    let expression_wantedP = [1];
+    for(let i = 0; i < options_li.length; i++) {
+        let getWanted = parseInt(5 - options_li[i].querySelector("input").value);
+        if(getWanted > 4){
+            getWanted = 4;
+        }
+        if(getWanted < 0){
+            getWanted = 0;
+        }
+        let result = options_point_sum[getWanted];
+        expression_wantedP[0] *= result;
+        expression_wantedP.push(result);
+        expression_no2 += ` \\times ${result}`;
+    }
+
+    expression_no2 += ` \\]`;
+    let p = expression_eachP[0] * expression_wantedP[0];
+
+
+    document.querySelector('.expression-no').innerHTML = expression_no;
+    document.querySelector('.expression-no').innerHTML += expression_no2;
+    document.querySelector('.value').innerHTML = `\\[  p = ${p} \\]`;
+    document.querySelector('.value-ko').innerHTML = `독립 시행 확률 : ${p * 100}%`
+    
+    let tried = parseInt(document.querySelector(".try").value);
+    document.querySelector(".finalvalue-ko").innerHTML = `P = (전체 확률) - (전부 실패 확률)`;
+    document.querySelector(".finalvalue-no").innerHTML = `\\[ p = 1 - (1 - p)^{${tried}} \\]`
+
+    let P = 1 - Math.pow((1 - p), tried);
+    document.querySelector(".finalvalue-result-no").innerHTML = `\\[ P = ${P} \\]`;
+    document.querySelector(".finalvalue-result-p").innerHTML = `P = ${P * 100}% `;
+
+    MathJax.typeset();
+
+    document.querySelector(".chart-box").innerHTML = "";
 
 }

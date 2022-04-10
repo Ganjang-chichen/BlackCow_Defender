@@ -1,12 +1,17 @@
 const calculator = document.querySelector(".calculator");
-const itemCounter = document.querySelector(".item-counter");
 let currState = "none";
 let currEquipment = "none";
 
 function NOT_SELECTED_IMG() {
-    let icon = itemCounter.querySelectorAll("img");
-    icon[0].src = `./img/빈화면.png`;
-    icon[1].src = `./img/빈화면.png`;
+    try {
+        let itemCounter = document.querySelector(".item-counter");
+        let icon = itemCounter.querySelectorAll("img");
+        icon[0].src = `./img/빈화면.png`;
+        icon[1].src = `./img/빈화면.png`;
+    }
+    catch(e) {
+
+    }
 }
 NOT_SELECTED_IMG();
 
@@ -53,14 +58,36 @@ function createItemSelectHtml(item) {
 function itemButtonClick(value){
     currState = value;
     calculator.innerHTML = createItemSelectHtml(value);
-    let icon = itemCounter.querySelectorAll("img");
-    if(value === "골드애플") {
-        icon[0].src = "./img/독사과.png";
-        icon[1].src = "./img/독사과.png";
-    }else if(value === "로얄스타일") {
-        icon[0].src = "./img/Royal.png";
-        icon[1].src = "./img/Royal.png";
+    let itemCounter = document.querySelector(".item-counter");
+    
+    
+    let img_src = "";
+    if(value === "로얄스타일"){
+        img_src = "Royal"
+        
+    }else if(value === "골드애플") {
+        img_src = "독사과"
+        
     }
+    console.log(img_src);
+
+    itemCounter.innerHTML = `
+        <img src="./img/${img_src}.png">
+        <div>도전 횟수:</div>
+        <input type="number" class="count try" value="1" min="1">
+        <div>기대 획득 개수:</div>
+        <input type="number" class="count expect" value="1" min="1">
+        <img src = "./img/${img_src}.png">
+    `
+    document.querySelector(".expect").addEventListener("input", () => {
+        let v_try = document.querySelector(".try").value
+        let v_expect = document.querySelector(".expect").value
+    
+        if(parseInt(v_try) < parseInt(v_expect)) {
+            document.querySelector(".expect").value = v_try;
+        }
+    });
+
 }
 
 // 로얄, 똥사과 목록 선택 시
@@ -161,16 +188,23 @@ function createCubeOptionSelectHTML(){
 
 // 큐브 클릭
 function selectCube(value) {
+    let itemCounter = document.querySelector(".item-counter");
     if(value === undefined || value === "x"){
         return
     }
 
     currState = value;
+    
+    calculator.innerHTML = createCubeOptionSelectHTML();
+    document.querySelector(".item-counter").innerHTML = `
+        <img>
+        <div>도전 횟수:</div>
+        <input type="number" class="count try" value="1" min="1">
+        <img>
+    `
     let icon = itemCounter.querySelectorAll("img");
     icon[0].src = `./img/${value}.png`;
     icon[1].src = `./img/${value}.png`;
-    calculator.innerHTML = createCubeOptionSelectHTML();
-
 }
 
 // 큐브 - 부위와 각 줄 에 맞는 select option html 생성
@@ -234,15 +268,109 @@ function AddCubeOption(value, idx) {
     `
 }
 
+
+//****************************** 환불 화면 생성 **********************************
+
+function addFireOptions(value){
+    
+    if(value === "x") {
+        return;
+    }
+
+    let options_li = document.querySelectorAll(".fireOptions-selected");
+
+    
+
+    if(options_li.length >= 4) {
+        return;
+    }
+
+    for(let i = 0; i < options_li.length; i++) {
+        if(options_li[i].querySelector("div").innerText === value) {
+            return;
+        }
+    }
+
+    let html = `
+    <div class="fireOptions-selected">
+        <div>${value}</div>
+        <input type="number" class="fireOptions-level" min="1" max="5" value="5">
+        <div>추 이상</div>
+        <button onclick="clickDelete_option(this)">x</button>
+    </div>`
+
+    let optionsBox = document.querySelector(".fireOptions-list");
+    optionsBox.innerHTML += html;
+    
+}
+
+function oncheckWeapon_fire(value) {
+    const optionList = FireData[value];
+    let fireOptions_html = ``;
+    for(let i = 0; i < optionList.length; i++) {
+        let temp = `<option value="${optionList[i]}">${optionList[i]}</option>`;
+        fireOptions_html += temp;
+    }
+    document.querySelector(".fireOptions-select").innerHTML = fireOptions_html;
+}
+
+function selectFire(click) {
+    currState = click;
+    const fireOptions_weaponOptions_list = FireData["무기"];
+
+    document.querySelector(".item-counter").innerHTML = `
+        <div>환생의 불꽃 종류 선택</div>
+        <select class="selectfire">
+            <option value="강력한 환생의 불꽃">강력한 환생의 불꽃</option>
+            <option value="영원한 환생의 불꽃">검은/영원한 환생의 불꽃</option>
+        </select>
+        <div>시도 횟수</div>
+        <input type="number" min="1" value="1" class="count try" onchange="settingNatural(this)">
+    
+    `
+
+    let fireOptions_html = ``;
+    for(let i = 0; i < fireOptions_weaponOptions_list.length; i++) {
+        let temp = `<option value="${fireOptions_weaponOptions_list[i]}">${fireOptions_weaponOptions_list[i]}</option>`;
+        fireOptions_html += temp;
+    }
+
+    document.querySelector(".calculator").innerHTML = `
+    <div class="fireOptions">
+        <div>
+            <select class="fireOptions-isBoss">
+                <option value="0">보스 장비 외</option>
+                <option value="1">보스 장비</option>
+            </select>
+        </div>
+        <div>
+            <select class="fireOptions-isweapon" onchange="oncheckWeapon_fire(this.value)">
+                <option value="무기">무기</option>
+                <option value="그외 장비">그외 장비</option>
+            </select>
+        </div>
+        <select class="fireOptions-select" onchange="addFireOptions(this.value)">
+            <option value="x">옵션 선택(최대4개)</option>
+            ${fireOptions_html}
+        </select>
+        <div class="fireOptions-list">
+            
+        </div>
+    </div>
+    `
+    
+}
+
+//****************************** 공용 함수 **********************************
+
 function clickDelete_option(node) {
     node.parentNode.parentNode.removeChild(node.parentNode);
 }
 
-document.querySelector(".expect").addEventListener("input", () => {
-    let v_try = document.querySelector(".try").value
-    let v_expect = document.querySelector(".expect").value
-
-    if(parseInt(v_try) < parseInt(v_expect)) {
-        document.querySelector(".expect").value = v_try;
+function settingNatural(node) {
+    if(node.value < 1) {
+        node.value = 1;
+    }else {
+        node.value = parseInt(node.value);
     }
-});
+}

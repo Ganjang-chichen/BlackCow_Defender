@@ -1,3 +1,7 @@
+.calculator {
+    margin-bottom: 10px;
+}
+
 .item-select {
     font-family: inherit;
     font-size: inherit;
@@ -54,4 +58,35 @@
     align-items: center;
     width: 100%;
     margin-bottom: 10px;
+}
+
+.selectfire,
+.fireOptions-select,
+.fireOptions-isBoss,
+.fireOptions-isweapon {
+    height: 50px;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+}
+
+.fireOptions {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.fireOptions-selected {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.fireOptions-selected input {
+    width: 50px;
+    height: 25px;
+}
+
+.fireOptions-selected div {
+    margin: 10px;
 }

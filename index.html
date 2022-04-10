@@ -29,18 +29,17 @@
             <button onclick="selectCube('명장의큐브')">명장의큐브</button>
             <button onclick="selectCube('장인의큐브')">장인의큐브</button>
             <button onclick="selectCube('수상한큐브')">수상한큐브</button>
+            <button onclick="selectFire('환생의불꽃')">환생의불꽃</button>
         </div>
 
         <div class="item-counter">
-            <img src="./img/Royal.png" alt="">
-            <div>도전 횟수:</div>
-            <input type="number" class="count try" value="1" min="1">
-            <div>기대 획득 개수:</div>
-            <input type="number" class="count expect" value="1" min="1">
-            
-            <img src="./img/Royal.png" alt="">
+            <div>환생의 불꽃 종류 선택</div>
+            <select class="selectfire">
+                <option value="강력한 환생의 불꽃">강력한 환생의 불꽃</option>
+                <option value="영원한 환생의 불꽃">검은/영원한 환생의 불꽃</option>
+            </select>
         </div>
-
+        <div class="line"></div>
         <div class="calculator">
             
         </div>
@@ -57,7 +56,11 @@
             </div>
             <div class="expression">
                 <div class="expression-ko">
-                    
+                    \[ p : 독립시행 확률, p_n : 각 옵션의 개수(n)별 확률, x_n : 각 옵션의 개수 확률\]
+                    단 보스 장비의 경우 옵션의 개수는 고정으로 4개이다.
+                    \[ x1 = 0.4, x2 = 0.4, x3 = 0.16, x4 = 0.04 \]
+                    \[ p = \Sigma_{k=n}^4 (p_k) \times (원하는 등급 이상 확률1) \times ... \times (원하는 등급 이상 확률 n) \]
+                    \[ p_k =  x_k \times \frac{_{19-n}C_{k - n}}{ _{19}C_k}  \]
                 </div>
                 <div class="expression-no">
                     
@@ -76,9 +79,7 @@
                 <div class="finalvalue-result-no"></div>
                 <div class="finalvalue-result-p"></div>
             </div>
-            
-            
-            
+
             <div class="chart-box">
                 <canvas class="chart"></canvas>
             </div>

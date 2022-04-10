@@ -1,6 +1,7 @@
 let IsCubeDataLoadFin = false;
 let IsRoyalDataLoadFin = false;
 let IsAppleDataLoadFin = false;
+let IsFireDataLoadFin = false;
 
 const start = Date.now();
 
@@ -12,6 +13,7 @@ function get_delay_time(){
 let GoldAppleData = {};
 let RoyalStyleData = {};
 let CubeData = {};
+let FireData = {};
 
 let equipment_li = [
     "무기", "엠블렘", "보조무기(포스실드, 소울링 제외)", "포스실드, 소울링", "방패",
@@ -50,6 +52,17 @@ fetch("./data/CubeData.json")
     IsCubeDataLoadFin = true;
 });
 
+fetch("./data/AddOptData.json")
+.then((res) => {
+    return res.json();
+})
+.then(jsondata => {
+    FireData = jsondata;
+    console.log(get_delay_time());
+    IsFireDataLoadFin = true;
+})
+
 function IsLoadingFinish() {
-    return IsCubeDataLoadFin && IsRoyalDataLoadFin && IsAppleDataLoadFin;
+    return IsCubeDataLoadFin && IsRoyalDataLoadFin 
+            && IsAppleDataLoadFin && IsFireDataLoadFin;
 }

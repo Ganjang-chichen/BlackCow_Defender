@@ -25,9 +25,5 @@
     text-align: center;
     width: 100px;
 }
-.count::-webkit-outer-spin-button,
-.count::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
+
 
