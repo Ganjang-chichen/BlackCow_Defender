@@ -7,38 +7,100 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script type="module">
-    import { LaTeXJSComponent } from "https://cdn.jsdelivr.net/npm/latex.js/dist/latex.mjs"
-    customElements.define("latex-js", LaTeXJSComponent)
-  </script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="./js/lib/lodash/lodash.js"></script>
 
-  <style>
-    latex-js {
-      display: inline-block;
-      width: 40%;
-      border: 1px solid red;
-      margin-right: 2em;
-    }
-  </style>
-
-  <title>LaTeX.js Web Component Test</title>
 </head>
 
 <body>
-  <h1>Compiling LaTeX</h1>
+  <svg></svg>
 
-  <latex-js baseURL="https://cdn.jsdelivr.net/npm/latex.js/dist/">
-    \documentclass{article}
+<script>
+  let data = {
+    "name" : "root",
+    "children": [
+      {"name" : "11"},
+      {"name" : "12"},
+      {"name" : "13", "size" : 3534},
+      {"name" : "14", "size" : 5731, "ffff" : 333.1444},
+      {"name" : "15",
+        "children" : [
+        {"name" : "21"},
+        {"name" : "22"},
+        {"name" : "23"}
+        ]}
+    ]
+  }
+  
 
-    \begin{document}
-    Hello World.
-    \end{document}
-  </latex-js>
+  let canvas = d3.select("body").append("svg")
+                  .attr("width", 500)
+                  .attr("height", 500);
 
+  let diagonal = d3.svg.diagonal()
+      .source({x : 10, y : 10})
+      .target({x : 300, y : 300});
 
-  <latex-js hyphenate="false">
-    Another.
-  </latex-js>
+  canvas.append("path")                    
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("d", diagonal);
+</script>
+<script>
+  let canvas2 = d3.select("body").append("svg")
+                  .attr("width", 500)
+                  .attr("height", 500)
+                  .append("g")
+                    .attr("transform", "translate(50, 50)");
+  let tree = d3.layout.tree()
+      .size([400, 400]);
+  
+  let nodes = tree.nodes(data);
+  console.log(nodes);
+
+  let links = tree.links(nodes);
+  console.log(links);
+
+  let node = canvas2.selectAll(".node")
+    .data(nodes)
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", function (d) {return `translate(${d.y}, ${d.x})`;})
+    
+  node.append("circle")
+    .attr("r", 5)
+    .attr("fill", "steelblue");
+
+  node.append("text")
+    .text((d) => {return d.name;})
+    .attr("transform", function (d) {return `translate(${-10}, ${-10})`;});
+  
+  let diagonal2 = d3.svg.diagonal()
+    .projection((d) => {return [d.y, d.x]});
+
+  canvas2.selectAll(".link")
+    .data(links)
+    .enter()
+    .append("path")
+    .attr("class", "link")
+    .attr("fill",  "none")
+    .attr("stroke", "#ADADAD")
+    .attr("d", diagonal2)
+
+</script>
+
+<script>
+
+  if(window.Worker) {
+    var worker = new Worker("./js/BFS.js");
+    worker.postMessage({msg : "start~"});
+    worker.onmessage = (e) => {
+      console.log(e.data);
+      worker.terminate;
+    }
+  }
+</script>
 
 </body>
 
